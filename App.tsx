@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Button,
@@ -8,24 +8,41 @@ import {
   TextInput,
   TouchableOpacity,
   Platform,
+  Keyboard,
 } from 'react-native';
 import Task from './components/Task';
 
 const App = () => {
+  const [task, setTask] = useState('');
+  const [addedTask, setAddedTask] = useState([]);
+
+  const addTask = () => {
+    Keyboard.dismiss();
+    setAddedTask([...addedTask, task]);
+    setTask('');
+    console.log(addedTask);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.tasksWrapper}>
         <Text style={styles.section}>Today's Tasks</Text>
         <View style={styles.items}>
-          <Task text="Task 1" />
-          <Task text="Task 2" />
+          {addedTask.map((item, index) => {
+            return <Task key={index} text={item} />;
+          })}
         </View>
       </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.writeTaskWrapper}>
-        <TextInput style={styles.input} placeholder={'Write a Task'} />
-        <TouchableOpacity>
+        <TextInput
+          style={styles.input}
+          placeholder={'Write a Task'}
+          value={task}
+          onChangeText={text => setTask(text)}
+        />
+        <TouchableOpacity onPress={() => addTask()}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
           </View>
