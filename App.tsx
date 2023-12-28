@@ -11,22 +11,32 @@ import {
   Keyboard,
 } from 'react-native';
 import Task from './components/Task';
+import CompletedTask from './components/CompletedTask';
 
 const App = () => {
   const [task, setTask] = useState('');
   const [addedTask, setAddedTask] = useState([]);
+  const [deletedTask, setDeletedTask] = useState([]);
 
   const addTask = () => {
     Keyboard.dismiss();
     setAddedTask([...addedTask, task]);
     setTask('');
-    console.log(addedTask);
   };
 
   const completeTask = index => {
     let tempTask = [...addedTask];
+    setDeletedTask([...deletedTask, tempTask[index]]);
+    console.log([...deletedTask]);
     tempTask.splice(index, 1);
     setAddedTask(tempTask);
+  };
+
+  const reAddDeletedTask = index => {
+    let temp = [...deletedTask];
+    setAddedTask([...addedTask, temp[index]]);
+    temp.splice(index, 1);
+    setDeletedTask(temp);
   };
 
   return (
@@ -38,6 +48,21 @@ const App = () => {
             return (
               <TouchableOpacity key={index} onPress={() => completeTask(index)}>
                 <Task text={item} />
+              </TouchableOpacity>
+            );
+          })}
+          {deletedTask.length != 0 && (
+            <View>
+              <Text style={[styles.section]}>Completed Tasks</Text>
+            </View>
+          )}
+
+          {deletedTask.map((item, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={() => reAddDeletedTask(index)}>
+                <CompletedTask text={item} />
               </TouchableOpacity>
             );
           })}
