@@ -23,13 +23,23 @@ const App = () => {
     console.log(addedTask);
   };
 
+  const completeTask = index => {
+    let tempTask = [...addedTask];
+    tempTask.splice(index, 1);
+    setAddedTask(tempTask);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.tasksWrapper}>
         <Text style={styles.section}>Today's Tasks</Text>
         <View style={styles.items}>
           {addedTask.map((item, index) => {
-            return <Task key={index} text={item} />;
+            return (
+              <TouchableOpacity key={index} onPress={() => completeTask(index)}>
+                <Task text={item} />
+              </TouchableOpacity>
+            );
           })}
         </View>
       </View>
