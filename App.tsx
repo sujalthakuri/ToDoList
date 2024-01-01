@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import Realm from 'realm';
 import {
   View,
   Button,
@@ -12,8 +13,10 @@ import {
 } from 'react-native';
 import Task from './components/Task';
 import CompletedTask from './components/CompletedTask';
+import Schema from './components/Schema';
 
 const App = () => {
+  const realm = new Realm({schema: [Schema]});
   const [task, setTask] = useState('');
   const [addedTask, setAddedTask] = useState([]);
   const [deletedTask, setDeletedTask] = useState([]);
@@ -22,6 +25,15 @@ const App = () => {
     Keyboard.dismiss();
     setAddedTask([...addedTask, task]);
     setTask('');
+
+    realm.write(() => {
+      realm.create('Schema', {id: 1, task_name: task, isCompleted: false});
+      console.log('Data inserted successfully:', {
+        id: 1,
+        task_name: task,
+        isCompleted: false,
+      });
+    });
   };
 
   const completeTask = index => {
@@ -30,6 +42,9 @@ const App = () => {
     console.log([...deletedTask]);
     tempTask.splice(index, 1);
     setAddedTask(tempTask);
+
+    const allTasks = realm.objects('Schema');
+    console.log('All tasks in the database:', allTasks);
   };
 
   const reAddDeletedTask = index => {
