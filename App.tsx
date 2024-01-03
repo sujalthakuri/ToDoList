@@ -42,9 +42,6 @@ const App = () => {
     console.log([...deletedTask]);
     tempTask.splice(index, 1);
     setAddedTask(tempTask);
-
-    const allTasks = realm.objects('Schema');
-    console.log('All tasks in the database:', allTasks);
   };
 
   const reAddDeletedTask = index => {
